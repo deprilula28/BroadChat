@@ -1,0 +1,51 @@
+# Message format from external sources such as Discord.
+message-format-external: "&r<_%%NAME%%_&r> _%%MESSAGE%%_"
+
+# Maximum amount of chats a single player (Without permission "BroadChat.Chat.NoCreatedCap") can create. Use -1 for infinite.
+chat-count-cap: 5
+
+# Maximum amount of chats a single player (Without permission "BroadChat.Chat.NoJoinedCap") can be a part of. Use -1 for infinite.
+chat-joined_cap: -1
+
+# Default color for a chat, and the only color that can be used by players without permissions.
+chat-color-default: "GRAY"
+
+# Settings specific to when you're running this in a Bungee server.
+bungee:
+  # Message format for cross-server PMs.
+  message-format-pm: "&r<_%%SOURCE%%_ &r-> _%%TARGET%%_&r> _%%MESSAGE%%_"
+  
+  # Message format for a chat channel.
+  message-format-chat: "_%%CHAT_COLOR%%_[_%%CHAT_NAME%%_] &r<_%%NAME%%_> _%%MESSAGE%%_"
+
+  # Delay for talking globally in seconds (You can bypass this restriction with permission "BroadChat.Global.NoDelay"). Use -1 for no restriction.
+  global-delay: 40
+
+# Allows usage of the Discord API provided.
+# More instructions on how to make this work are present here: https://goo.gl/Ot5Y0V
+discord:
+  # If you want to use the Discord integration or not.
+  use: false
+
+  # Get an invitation link to the general channel (https://discord.gg/...) and strip the latter part of it (Represented as "..." in the example)
+  # This will be used to redirect players who click on the author name on messages sent from Discord.
+  inviteID: ""
+
+  # An IP to connect to your server.
+  # This will be used in the bot's game in case someone clicks it.
+  serverIP: ""
+
+  # Your Discord bot's token.
+  # WARNING: This is something you should not share with anyone, as it gives full control over your bot.
+  # It is not recommended to give permissions other than Send and Read messages, to prevent against damage if this token gets found.
+  token: ""
+
+  # Settings specific to when you're running this in anywhere.
+  # Used for binding specific Discord Channels to being sent in users from specific channels.
+  # Usage: [<discord channel id or _%%PUBLIC_CHANNEL%%_>, <channel>]
+  # EG: ["268187052753944576", "Hello"]
+  # You can use the wild character (*) in either of those to represent any discord channel and any broadchat channel.
+  channel-mappings:
+    # Channel = BungeeCord Server Proxy Name
+    bungee:
+      - [__%%PUBLIC_CHANNEL%%_, '*']

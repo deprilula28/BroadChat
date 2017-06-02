@@ -1,0 +1,6 @@
+name: BroadChat
+version: 0.1.0
+description: Extensive support for linked chat between a Bungee server, it's proxies and services like Discord or Skype.
+author: deprilula28
+main: me.deprilula28.broadchat.BroadChatBungee
+depend: [CoalesceCore]
