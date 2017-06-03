@@ -1,10 +1,24 @@
 package me.deprilula28.broadchat.util
 
+import com.google.gson.GsonBuilder
+import me.deprilula28.broadchat.BroadChatAPI
+import me.deprilula28.broadchat.Console
+import me.deprilula28.broadchat.console
 import me.deprilula28.broadchat.err
 import java.io.InputStream
 import java.util.*
 
 typealias AWTColor = java.awt.Color
+
+private var apiNullable: BroadChatAPI? = null
+internal var api: BroadChatAPI
+    get() = apiNullable!!
+    set(api) { apiNullable = api }
+
+val gson = GsonBuilder().apply {
+    setPrettyPrinting()
+    disableHtmlEscaping()
+}.create()!!
 
 fun quietly(func: () -> Unit) {
     try {

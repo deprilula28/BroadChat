@@ -1,6 +1,7 @@
 package me.deprilula28.broadchat.services
 
 import me.deprilula28.broadchat.*
+import me.deprilula28.broadchat.chat.Chat
 import me.deprilula28.broadchat.util.errorLog
 import me.deprilula28.broadchat.util.toAWT
 import net.md_5.bungee.api.ChatColor
@@ -17,11 +18,10 @@ import java.util.*
 import java.util.function.Function
 
 class BungeeService(private val api: BroadChatAPI, bungeeCordPlugin: Plugin):
-        ExternalBroadChatService(
-                name = "BungeeCord",
+        BroadChatService(
+                name = "Minecraft",
+                id = "bungee",
                 hoverMessage = "&aChat for the network.",
-                clickURL = "http://minecraft.net",
-                specificClickURL = Function { Optional.empty() },
                 specificHoverMessage = Function { Optional.empty() }
         ), Listener {
 
@@ -41,23 +41,33 @@ class BungeeService(private val api: BroadChatAPI, bungeeCordPlugin: Plugin):
 
     }
 
+    override fun sendChatMessage(source: BroadChatSource, content: String, chat: Chat) {
+
+        errorLog("Failed to handle chat message") {
+
+        }
+
+    }
+
     override fun sendMessage(source: BroadChatSource, content: String, messageChannel: String) {
 
         errorLog("Failed to handle message") {
             if (messageChannel == "*") {
                 proxy.broadcast(api.settings["message-format-external"][mapOf(
-                        "name" to source.name(),
+                        "name" to source.name,
                         "service" to source.service.name,
                         "message" to content
                 )])
-            } else {
+            } else if (proxy.servers.contains(messageChannel)) {
                 proxy.servers[messageChannel]!!.players.forEach {
                     it.sendMessage(api.settings["message-format-external"][mapOf(
-                            "name" to source.name(),
+                            "name" to source.name,
                             "service" to source.service.name,
                             "message" to content
                     )])
                 }
+            } else {
+                warn("Requested proxy not found: $messageChannel")
             }
         }
 
@@ -65,18 +75,25 @@ class BungeeService(private val api: BroadChatAPI, bungeeCordPlugin: Plugin):
 
 }
 
-class BungeePlayerTarget(val player: ProxiedPlayer, bungeeService: BungeeService) : ExternalBroadChatSource(player.name, bungeeService) {
+class BungeePlayerTarget(val player: ProxiedPlayer, bungeeService: BungeeService) : BroadChatSource(bungeeService) {
 
-    override fun color(): Color {
+    override val name: String
+        get() = player.displayName
 
-        if (player.displayName.startsWith("§")) {
-            val color = ChatColor.getByChar(player.displayName.substring(1, 2).toCharArray().first())
-            if (color == null) return Color.WHITE
-            else return color.toAWT()
+    override val description: Optional<String>
+        get() = Optional.of("&ePlayer on the network.")
+
+    override val color: Color
+        get() {
+            if (player.displayName.startsWith("§")) {
+                val color = ChatColor.getByChar(player.displayName.substring(1, 2).toCharArray().first())
+                if (color == null) return Color.WHITE
+                else return color.toAWT()
+            }
+            return Color.WHITE
         }
-        return Color.WHITE
 
-    }
-    override fun profileImageURL(): String? = "https://crafatar.com/avatars/${player.uniqueId}"
+    override val profileImageUrl: String
+        get() = "https://crafatar.com/avatars/${player.uniqueId}"
 
 }

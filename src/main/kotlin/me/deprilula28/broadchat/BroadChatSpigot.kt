@@ -5,17 +5,18 @@ import com.coalesce.plugin.CoPlugin
 import me.deprilula28.broadchat.services.BukkitService
 import me.deprilula28.broadchat.settings.SettingParser
 import me.deprilula28.broadchat.settings.yaml
+import me.deprilula28.broadchat.util.api
 import me.deprilula28.broadchat.util.readText
 import java.io.File
 
 class BroadChatSpigot: CoPlugin() {
 
-    private lateinit var api: BroadChatAPI
-
     override fun onPluginEnable() {
 
         updateCheck("deprilula28", "BroadChat", true)
 
+        runningSpigot = true
+        ccDataFolder = dataFolder
         console = SpigotConsole(coLogger)
         api = BroadChatAPI()
         val config = File(dataFolder, "config.yml")
@@ -25,7 +26,7 @@ class BroadChatSpigot: CoPlugin() {
             config.writeText(javaClass.getResourceAsStream("/config.yml").readText())
         }
         api.settings = SettingParser(yaml.load(config.readText())!! as Map<String, Any>, api)
-        api.targets.add(BukkitService(api, this))
+        api.addService(BukkitService(api, this))
         info("Finished loading.")
 
     }

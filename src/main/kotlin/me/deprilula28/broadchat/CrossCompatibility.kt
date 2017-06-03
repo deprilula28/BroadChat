@@ -1,6 +1,6 @@
 package me.deprilula28.broadchat
 
-import net.dv8tion.jda.core.utils.SimpleLog
+import java.io.File
 
 interface Console {
 
@@ -11,25 +11,25 @@ interface Console {
 
 }
 
+var runningSpigot = false
+
 private var consoleNullable: Console? = null
 internal var console: Console
     get() = consoleNullable!!
     set(console) { consoleNullable = console }
+
+private var dataFolderNullable: File? = null
+internal var ccDataFolder: File
+    get() = dataFolderNullable!!
+    set(folderData) { dataFolderNullable = folderData }
 
 internal fun info(str: String) = console.println(str)
 internal fun err(str: String) = console.printerr(str)
 internal fun warn(str: String) = console.printwarn(str)
 internal fun debug(str: String) = console.printdebug(str)
 
-class Logger: SimpleLog.LogListener {
+interface Permission {
 
-    override fun onLog(log: SimpleLog, level: SimpleLog.Level, p2: Any) {
-        if (p2 is String) {
-            if (level.isError) err("§r[§fJDA §cError§r] §f$p2")
-            else if (level == SimpleLog.Level.INFO) info("§r[§fJDA§r] §r$p2")
-        }
-    }
 
-    override fun onError(log: SimpleLog, err: Throwable) { }
 
 }

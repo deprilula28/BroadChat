@@ -40,12 +40,19 @@ discord:
   # It is not recommended to give permissions other than Send and Read messages, to prevent against damage if this token gets found.
   token: ""
 
-  # Settings specific to when you're running this in anywhere.
+  # Whether the bot should generate a voice channel for each player created chat.
+  # Players outside said voice channel wouldn't be able to join it.
+  create-voice-channel-for-chat: true
+
   # Used for binding specific Discord Channels to being sent in users from specific channels.
-  # Usage: [<discord channel id or _%%PUBLIC_CHANNEL%%_>, <channel>]
-  # EG: ["268187052753944576", "Hello"]
+  # Usage: [<channel>, <discord channel id>]
+  # EG: ["world", "268187052753944576"]
   # You can use the wild character (*) in either of those to represent any discord channel and any broadchat channel.
   channel-mappings:
     # Channel = BungeeCord Server Proxy Name
     bungee:
-      - [__%%PUBLIC_CHANNEL%%_, '*']
+      - ['*', '*']
+
+    # Channel = Spigot World
+    spigot: 
+      - ['*', '*']

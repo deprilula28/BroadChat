@@ -2,6 +2,8 @@ package me.deprilula28.broadchat.settings
 
 import me.deprilula28.broadchat.BroadChatAPI
 import me.deprilula28.broadchat.ExternalBroadChatService
+import me.deprilula28.broadchat.info
+import me.deprilula28.broadchat.runningSpigot
 import me.deprilula28.broadchat.services.DiscordServiceSettingsLoader
 import me.deprilula28.broadchat.util.colored
 import me.deprilula28.broadchat.util.errorLog
@@ -30,11 +32,11 @@ class SettingParser(private val map: Map<String, Any>, api: BroadChatAPI) {
                 serviceSettingsMap[k]!!.apply {
                     val serviceSettings = load(v)
                     if (serviceSettings.use) {
-                        println("Initializing service $k...")
+                        info("Loading service '$k'...")
 
-                        errorLog("Failed to load service $k") {
+                        errorLog("Failed to load service '$k'") {
                             val service = initService(serviceSettings, api)
-                            api.targets.add(service)
+                            api.addService(service)
                         }
                     }
                 }
@@ -62,6 +64,25 @@ class SettingValue(val value: Any) {
         arguments.forEach { k, v -> returnValue.replace("_%${k.toUpperCase()}%_", v.colored()) }
 
         return returnValue
+
+    }
+
+}
+
+class ChannelMappings(private val mappings: Map<String, Map<String, String>>) {
+
+    operator fun get(string: String): String? {
+
+        val tag = if (runningSpigot) "spigot" else "bungee"
+        val map = mappings[tag]!!
+
+        if (map.containsKey(string)) {
+            return map[string]
+        } else if (map.containsKey("*")) {
+            return map["*"]
+        }
+
+        return null
 
     }
 
