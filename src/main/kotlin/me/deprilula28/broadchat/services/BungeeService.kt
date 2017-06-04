@@ -44,7 +44,16 @@ class BungeeService(private val api: BroadChatAPI, bungeeCordPlugin: Plugin):
     override fun sendChatMessage(source: BroadChatSource, content: String, chat: Chat) {
 
         errorLog("Failed to handle chat message") {
-
+            chat.members.forEach {
+                if (it is BungeePlayerTarget) {
+                    it.player.sendMessage(TextComponent(api.settings["message-format-chat"][mapOf(
+                            "chat_color" to chat.color.toString(),
+                            "chat_name" to chat.name,
+                            "name" to it.name,
+                            "message" to content
+                    )]))
+                }
+            }
         }
 
     }

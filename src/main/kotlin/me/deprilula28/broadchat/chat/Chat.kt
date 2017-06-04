@@ -5,12 +5,14 @@ import me.deprilula28.broadchat.ccDataFolder
 import me.deprilula28.broadchat.debug
 import me.deprilula28.broadchat.util.api
 import me.deprilula28.broadchat.util.gson
+import net.md_5.bungee.api.ChatColor
+import java.awt.Color
 import java.io.File
 
-class Chat(val creator: BroadChatSource, val members: MutableList<BroadChatSource>, val permissions: MutableMap<BroadChatSource,
-        ChatPermissionGroup>, val id: String, var name: String = "") {
+class Chat(val members: MutableList<BroadChatSource>, val permissions: MutableMap<BroadChatSource, ChatPermissionGroup>,
+           val id: String, var name: String = "", val color: ChatColor) {
 
-    fun sendToAll(source: BroadChatSource, message: String) = members.forEach { api.sendMessage(source, message, id) }
+    fun sendToAll(source: BroadChatSource, message: String) = api.sendMessage(source, message, this)
 
     fun save() {
 
@@ -25,4 +27,16 @@ class Chat(val creator: BroadChatSource, val members: MutableList<BroadChatSourc
     }
 }
 
-data class ChatPermissionGroup(val name: String, val perms: List<String>)
+data class ChatPermissionGroup(val name: String, val perms: List<Permission>, val color: Color, val tag: String)
+enum class Permission(val permName: String, val descripton: String) {
+
+    SPEAK("speak", "Allows you to talk"),
+    KICK("kick", "Allows you to kick chat members"),
+    SOFT_MUTE("softmute", "Allows you to mute other members for up to 14 days"),
+    MUTE("mute", "Allows you to mute other members permanently"),
+    SOFT_BAN("softban", "Allows you to ban other members (kick + not allowing to join) for up to 7 days"),
+    BAN("ban", "Allows you to ban other members (kick + not allowing to join) permanently"),
+    MANAGE_PERMISSIONS("permmanage", "Grants access to managing group permissions"),
+    MANAGE_CHAT("chatadmin", "Grants access to managing chat information such as name")
+
+}

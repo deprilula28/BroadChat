@@ -7,6 +7,9 @@ chat-count-cap: 5
 # Maximum amount of chats a single player (Without permission "BroadChat.Chat.NoJoinedCap") can be a part of. Use -1 for infinite.
 chat-joined_cap: -1
 
+# Message format for a chat channel.
+message-format-chat: "_%%CHAT_COLOR%%_[_%%CHAT_NAME%%_] &r<_%%NAME%%_> _%%MESSAGE%%_"
+
 # Default color for a chat, and the only color that can be used by players without permissions.
 chat-color-default: "GRAY"
 
@@ -15,9 +18,6 @@ bungee:
   # Message format for cross-server PMs.
   message-format-pm: "&r<_%%SOURCE%%_ &r-> _%%TARGET%%_&r> _%%MESSAGE%%_"
   
-  # Message format for a chat channel.
-  message-format-chat: "_%%CHAT_COLOR%%_[_%%CHAT_NAME%%_] &r<_%%NAME%%_> _%%MESSAGE%%_"
-
   # Delay for talking globally in seconds (You can bypass this restriction with permission "BroadChat.Global.NoDelay"). Use -1 for no restriction.
   global-delay: 40
 
