@@ -1,12 +1,9 @@
 package me.deprilula28.broadchat.settings
 
-import me.deprilula28.broadchat.BroadChatAPI
-import me.deprilula28.broadchat.ExternalBroadChatService
-import me.deprilula28.broadchat.info
-import me.deprilula28.broadchat.runningSpigot
+import me.deprilula28.broadchat.api.BroadChatAPI
+import me.deprilula28.broadchat.api.ExternalBroadChatService
 import me.deprilula28.broadchat.services.DiscordServiceSettingsLoader
-import me.deprilula28.broadchat.util.colored
-import me.deprilula28.broadchat.util.errorLog
+import me.deprilula28.broadchat.util.*
 import org.yaml.snakeyaml.Yaml
 
 val yaml = Yaml()
@@ -58,12 +55,13 @@ class SettingValue(val value: Any) {
 
     operator fun get(arguments: Map<String, String>): String {
 
-        if (value !is String) return value.toString()
+        var returnValue = value.toString()
 
-        val returnValue = value
-        arguments.forEach { k, v -> returnValue.replace("_%${k.toUpperCase()}%_", v.colored()) }
+        fun color(m: String) = if (runningSpigot) me.deprilula28.broadchat.util.BukkitUtils.colored(m) else me.deprilula28.broadchat.util.BungeeUtils.coloredBng(m)
+        returnValue = color(returnValue)
+        arguments.forEach { k, v -> returnValue = returnValue.replace("_%${k.toUpperCase()}%_", v) }
 
-        return returnValue
+        return color(returnValue)
 
     }
 

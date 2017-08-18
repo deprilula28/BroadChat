@@ -1,12 +1,15 @@
 package me.deprilula28.broadchat.services
 
-import me.deprilula28.broadchat.*
+import me.deprilula28.broadchat.api.BroadChatAPI
+import me.deprilula28.broadchat.api.BroadChatService
+import me.deprilula28.broadchat.api.BroadChatSource
 import me.deprilula28.broadchat.chat.Chat
+import me.deprilula28.broadchat.util.debug
 import me.deprilula28.broadchat.util.errorLog
 import me.deprilula28.broadchat.util.toAWT
+import me.deprilula28.broadchat.util.warn
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.ProxyServer
-import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.ChatEvent
@@ -36,8 +39,9 @@ class BungeeService(private val api: BroadChatAPI, bungeeCordPlugin: Plugin):
     @EventHandler
     fun onChat(event: ChatEvent) {
 
-        if (event.isCommand || event.sender !is ProxiedPlayer || event.receiver !is ProxyServer) return
-        BungeePlayerTarget(event.sender as ProxiedPlayer, this).broadchat(event.message, api, (event.receiver as ProxyServer).name)
+        val sender = event.sender
+        if (event.isCommand || sender !is ProxiedPlayer) return
+        BungeePlayerTarget(sender, this).broadchat(event.message, api, sender.server.info.name)
 
     }
 
@@ -60,20 +64,25 @@ class BungeeService(private val api: BroadChatAPI, bungeeCordPlugin: Plugin):
 
     override fun sendMessage(source: BroadChatSource, content: String, messageChannel: String) {
 
+        debug("Sending message: $content to bungeecord")
         errorLog("Failed to handle message") {
             if (messageChannel == "*") {
-                proxy.broadcast(api.settings["message-format-external"][mapOf(
+                val msg = api.settings["message-format-external"][mapOf(
                         "name" to source.name,
-                        "service" to source.service.name,
+                        "service" to source.service.name.toLowerCase().capitalize(),
                         "message" to content
-                )])
+                )]
+                proxy.players.forEach {
+                    it.sendMessage(TextComponent(msg))
+                }
             } else if (proxy.servers.contains(messageChannel)) {
+                val msg = api.settings["message-format-external"][mapOf(
+                        "name" to source.name,
+                        "service" to source.service.name.toLowerCase().capitalize(),
+                        "message" to content
+                )]
                 proxy.servers[messageChannel]!!.players.forEach {
-                    it.sendMessage(api.settings["message-format-external"][mapOf(
-                            "name" to source.name,
-                            "service" to source.service.name,
-                            "message" to content
-                    )])
+                    it.sendMessage(TextComponent(msg))
                 }
             } else {
                 warn("Requested proxy not found: $messageChannel")

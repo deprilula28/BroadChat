@@ -1,4 +1,4 @@
-package me.deprilula28.broadchat
+package me.deprilula28.broadchat.util
 
 import java.io.File
 

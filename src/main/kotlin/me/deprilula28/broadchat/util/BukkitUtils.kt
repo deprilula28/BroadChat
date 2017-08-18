@@ -25,5 +25,7 @@ fun Char.findChatColor(): ChatColor? {
     return null
 }
 
-fun String.colored(): String = ChatColor.translateAlternateColorCodes('&', this)
+object BukkitUtils {
+    fun colored(str: String): String = ChatColor.translateAlternateColorCodes('&', str)
+}
 fun ChatColor.toAWT(): AWTColor = colorMap[this]!!

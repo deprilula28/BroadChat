@@ -1,4 +1,4 @@
-package me.deprilula28.broadchat
+package me.deprilula28.broadchat.api
 
 import me.deprilula28.broadchat.chat.Chat
 import java.awt.Color
@@ -6,13 +6,14 @@ import java.util.*
 import java.util.function.Function
 
 abstract class ExternalBroadChatService(name: String, id: String, hoverMessage: String, val clickURL: String,
-                                    specificHoverMessage: Function<BroadChatSource, Optional<String>>,
-                                    val specificClickURL: Function<BroadChatSource, Optional<String>>):
+                                        specificHoverMessage: Function<BroadChatSource, Optional<String>>,
+                                        val specificClickURL: Function<BroadChatSource, Optional<String>>):
         BroadChatService(name, id, hoverMessage, specificHoverMessage)
 
 abstract class BroadChatService(val id: String, val name: String, val hoverMessage: String, val specificHoverMessage: Function<BroadChatSource, Optional<String>>) {
     abstract fun sendMessage(source: BroadChatSource, content: String, messageChannel: String)
     abstract fun sendChatMessage(source: BroadChatSource, content: String, chat: Chat)
+    open fun disable() { }
 }
 
 abstract class ExternalBroadChatSource(val extService: ExternalBroadChatService) : BroadChatSource(extService) {

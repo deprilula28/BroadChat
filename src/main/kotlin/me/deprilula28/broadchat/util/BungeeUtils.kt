@@ -20,5 +20,7 @@ private val colorMap = mapOf(
         ChatColor.WHITE to AWTColor(0x3F3F3F)
 )
 
-fun String.coloredBng(): String = ChatColor.translateAlternateColorCodes('&', this)
+object BungeeUtils {
+    fun coloredBng(str: String): String = ChatColor.translateAlternateColorCodes('&', str)
+}
 fun ChatColor.toAWT(): AWTColor = colorMap[this]!!

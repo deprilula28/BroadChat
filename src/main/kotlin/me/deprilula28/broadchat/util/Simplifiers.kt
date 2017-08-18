@@ -1,10 +1,7 @@
 package me.deprilula28.broadchat.util
 
 import com.google.gson.GsonBuilder
-import me.deprilula28.broadchat.BroadChatAPI
-import me.deprilula28.broadchat.Console
-import me.deprilula28.broadchat.console
-import me.deprilula28.broadchat.err
+import me.deprilula28.broadchat.api.BroadChatAPI
 import java.io.InputStream
 import java.util.*
 

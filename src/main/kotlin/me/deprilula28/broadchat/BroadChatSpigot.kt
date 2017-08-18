@@ -2,11 +2,11 @@ package me.deprilula28.broadchat
 
 import com.coalesce.plugin.CoLogger
 import com.coalesce.plugin.CoPlugin
+import me.deprilula28.broadchat.api.BroadChatAPI
 import me.deprilula28.broadchat.services.BukkitService
 import me.deprilula28.broadchat.settings.SettingParser
 import me.deprilula28.broadchat.settings.yaml
-import me.deprilula28.broadchat.util.api
-import me.deprilula28.broadchat.util.readText
+import me.deprilula28.broadchat.util.*
 import java.io.File
 
 class BroadChatSpigot: CoPlugin() {
@@ -32,6 +32,9 @@ class BroadChatSpigot: CoPlugin() {
     }
 
     override fun onPluginDisable() {
+
+        info("Disabling BroadChat...")
+        api.unloadServices()
 
     }
 

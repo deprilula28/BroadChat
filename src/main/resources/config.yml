@@ -1,5 +1,5 @@
 # Message format from external sources such as Discord.
-message-format-external: "&r<_%%NAME%%_&r> _%%MESSAGE%%_"
+message-format-external: "&r<&5[_%SERVICE%_] &r_%NAME%_&r> _%MESSAGE%_"
 
 # Maximum amount of chats a single player (Without permission "BroadChat.Chat.NoCreatedCap") can create. Use -1 for infinite.
 chat-count-cap: 5
@@ -8,7 +8,7 @@ chat-count-cap: 5
 chat-joined_cap: -1
 
 # Message format for a chat channel.
-message-format-chat: "_%%CHAT_COLOR%%_[_%%CHAT_NAME%%_] &r<_%%NAME%%_> _%%MESSAGE%%_"
+message-format-chat: "_%CHAT_COLOR%_[_%CHAT_NAME%_] &r<_%NAME%_> _%MESSAGE%_"
 
 # Default color for a chat, and the only color that can be used by players without permissions.
 chat-color-default: "GRAY"
@@ -16,8 +16,8 @@ chat-color-default: "GRAY"
 # Settings specific to when you're running this in a Bungee server.
 bungee:
   # Message format for cross-server PMs.
-  message-format-pm: "&r<_%%SOURCE%%_ &r-> _%%TARGET%%_&r> _%%MESSAGE%%_"
-  
+  message-format-pm: "&r<_%SOURCE%_ &r-> _%TARGET%_&r> _%MESSAGE%_"
+
   # Delay for talking globally in seconds (You can bypass this restriction with permission "BroadChat.Global.NoDelay"). Use -1 for no restriction.
   global-delay: 40
 
@@ -45,14 +45,40 @@ discord:
   create-voice-channel-for-chat: true
 
   # Used for binding specific Discord Channels to being sent in users from specific channels.
-  # Usage: [<channel>, <discord channel id>]
-  # EG: ["world", "268187052753944576"]
+  # Usage: <discord channel id>: "<channel>"
+  # EG: 268187052753944576: "world"
   # You can use the wild character (*) in either of those to represent any discord channel and any broadchat channel.
-  channel-mappings:
+  discord-output:
     # Channel = BungeeCord Server Proxy Name
     bungee:
-      - ['*', '*']
+      "*": "*"
 
     # Channel = Spigot World
-    spigot: 
-      - ['*', '*']
+    spigot:
+      "*": "*"
+
+  # Used for binding the incoming channels to Discord Channels.
+  # Usage: <channel>: "<discord channel id>"
+  # EG: world: "268187052753944576"
+  # You can use the wild character (*) in the channel map to use any channel, a discord channel must be provided.
+  discord-input:
+    # Channel = BungeeCord Server Proxy Name
+    bungee:
+      "*": ""
+
+    # Channel = Spigot World
+    spigot:
+      "*": ""
+
+  # The format of the message sent on discord
+  # embed - Sends a fancy message with a bar in the side and an icon with the player's head
+  # message - Sends a boring old message
+  # webhook - Sends a webhook message, this will mean the message will be able to have the player's avatar and name. You will however have to fill in webhook-url.
+  format: 'embed'
+
+  # If format is set to 'webhook', this will be the webhook url.
+  # Learn more at https://support.discordapp.com/hc/pt-br/articles/228383668-Usando-Webhooks
+  webhook-url: ""
+
+  # If 'format' is set to message, this is how that message will be formatted.
+  message-format: '**<[_%SERVICE%_] _%NAME%_>** _%MESSAGE%_'

@@ -1,16 +1,32 @@
 package me.deprilula28.broadchat.chat
 
-import me.deprilula28.broadchat.BroadChatSource
-import me.deprilula28.broadchat.ccDataFolder
-import me.deprilula28.broadchat.debug
+import me.deprilula28.broadchat.api.BroadChatSource
+import me.deprilula28.broadchat.util.ccDataFolder
+import me.deprilula28.broadchat.util.debug
 import me.deprilula28.broadchat.util.api
 import me.deprilula28.broadchat.util.gson
 import net.md_5.bungee.api.ChatColor
 import java.awt.Color
 import java.io.File
 
-class Chat(val members: MutableList<BroadChatSource>, val permissions: MutableMap<BroadChatSource, ChatPermissionGroup>,
-           val id: String, var name: String = "", val color: ChatColor) {
+class PlayerChat(val creator: BroadChatSource,
+                 members: MutableList<BroadChatSource>,
+                 permissions: MutableMap<BroadChatSource, ChatPermissionGroup>,
+                 id: String,
+                 name: String = "",
+                 color: ChatColor):
+        Chat(members, permissions, id, name, color)
+
+open class Chat(val members: MutableList<BroadChatSource>,
+                val permissions: MutableMap<BroadChatSource, ChatPermissionGroup>,
+                val id: String,
+                private var innerName: String,
+                private var innerColor: ChatColor) {
+
+    val name: String
+        get() = innerName
+    val color: ChatColor
+        get() = innerColor
 
     fun sendToAll(source: BroadChatSource, message: String) = api.sendMessage(source, message, this)
 
@@ -25,6 +41,8 @@ class Chat(val members: MutableList<BroadChatSource>, val permissions: MutableMa
         debug("Done.")
 
     }
+
+
 }
 
 data class ChatPermissionGroup(val name: String, val perms: List<Permission>, val color: Color, val tag: String)
