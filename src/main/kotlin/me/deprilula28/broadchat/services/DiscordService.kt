@@ -21,6 +21,7 @@ import net.dv8tion.jda.core.entities.impl.GameImpl
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent
 import net.dv8tion.jda.core.hooks.ListenerAdapter
 import net.dv8tion.jda.core.utils.SimpleLog
+import net.md_5.bungee.api.ChatColor
 import org.json.JSONObject
 import java.awt.Color
 import java.io.File
@@ -28,38 +29,39 @@ import java.net.URL
 import java.time.LocalDate
 import java.util.*
 import java.util.function.Function
+import java.util.regex.Pattern
 
 
 class DiscordServiceSettingsLoader: ServiceSettingsLoader<DiscordServiceSettings> {
     override fun load(map: Map<*, *>): DiscordServiceSettings =
-        DiscordServiceSettings(map["serverIP"] as String, map["inviteID"] as String, (map["token"] as String).toCharArray(),
-            map["use"] as Boolean, map["discord-input"] as Map<String, Map<String, String>>, map["discord-output"] as Map<String, Map<String, String>>,
-                DiscordService.MessageSendType.valueOf((map["format"] as String).toUpperCase()), map["webhook-url"] as String,
-                SettingValue(map["message-format"] as String))
+            DiscordServiceSettings(map["serverIP"] as String, map["inviteID"] as String, (map["token"] as String).toCharArray(),
+                    map["use"] as Boolean, map["discord-input"] as Map<String, Map<String, String>>, map["discord-output"] as Map<String, Map<String, String>>,
+                    DiscordService.MessageSendType.valueOf((map["format"] as String).toUpperCase()), map["webhook-url"] as String,
+                    SettingValue(map["message-format"] as String))
 
     override fun initService(settings: DiscordServiceSettings, api: BroadChatAPI): ExternalBroadChatService =
-        DiscordService(settings.serverIP, settings.inviteID, settings.token, api, ChannelMappings(settings.channelMappingsInput),
-                ChannelMappings(settings.channelMappingsOutput), settings.messageSendType,
-                if (settings.messageSendType == DiscordService.MessageSendType.WEBHOOK) Optional.of(settings.webhookURL) else Optional.empty(), settings.messageFormat)
+            DiscordService(settings.serverIP, settings.inviteID, settings.token, api, ChannelMappings(settings.channelMappingsInput),
+                    ChannelMappings(settings.channelMappingsOutput), settings.messageSendType,
+                    if (settings.messageSendType == DiscordService.MessageSendType.WEBHOOK) Optional.of(settings.webhookURL) else Optional.empty(), settings.messageFormat)
 
 }
 
 class DiscordServiceSettings(val serverIP: String, val inviteID: String, val token: CharArray, use: Boolean,
-                     val channelMappingsInput: Map<String, Map<String, String>>, val channelMappingsOutput: Map<String, Map<String, String>>,
-                     val messageSendType: DiscordService.MessageSendType, val webhookURL: String, val messageFormat: SettingValue):
+                             val channelMappingsInput: Map<String, Map<String, String>>, val channelMappingsOutput: Map<String, Map<String, String>>,
+                             val messageSendType: DiscordService.MessageSendType, val webhookURL: String, val messageFormat: SettingValue):
         ExternalServiceSettings(use, channelMappingsInput)
 
 class DiscordService constructor(serverIP: String, invite: String, token: CharArray, api: BroadChatAPI,
                                  private val output: ChannelMappings, internal val input: ChannelMappings, private val messageSendType: MessageSendType,
                                  private val webhook: Optional<String>, private val messageFormat: SettingValue):
-    ExternalBroadChatService(
-        name = "Discord",
-        id = "discord",
-        hoverMessage = "&3Free chat service for gamers alike.",
-        clickURL = "http://discord.gg/$invite",
-        specificClickURL = Function { Optional.of("http://discord.gg/$invite") },
-        specificHoverMessage = Function { Optional.of("&aJoin our services by clicking or going to this link:\n&bdiscord.gg/$invite") }
-    ) {
+        ExternalBroadChatService(
+                name = "Discord",
+                id = "discord",
+                hoverMessage = "&3Free chat service for gamers alike.",
+                clickURL = "http://discord.gg/$invite",
+                specificClickURL = Function { Optional.of("http://discord.gg/$invite") },
+                specificHoverMessage = Function { Optional.of("&aJoin our services by clicking or going to this link:\n&bdiscord.gg/$invite") }
+        ) {
 
     private class JDALogger: SimpleLog.LogListener {
 
@@ -70,11 +72,11 @@ class DiscordService constructor(serverIP: String, invite: String, token: CharAr
             }
         }
 
-        override fun onError(log: SimpleLog, err: Throwable) { }
+        override fun onError(log: SimpleLog, err: Throwable) {}
 
     }
 
-    private val jda: JDA
+    internal val jda: JDA
     private val channelMap: MutableMap<Chat, Long>
 
     init {
@@ -182,10 +184,10 @@ class DiscordService constructor(serverIP: String, invite: String, token: CharAr
             warn("Message channel '$messageChannel' needs an output mapping.")
             return@sendMessage
         }) ?: run {
-            warn("Discord text channel with ID '$messageChannel' not found.")
+            warn("Discord text channel with ID '${output[messageChannel]}' not found.")
             return@sendMessage
         }).apply {
-            when(messageSendType) {
+            when (messageSendType) {
                 MessageSendType.EMBED -> {
                     sendMessage(
                             EmbedBuilder()
@@ -196,9 +198,9 @@ class DiscordService constructor(serverIP: String, invite: String, token: CharAr
                 }
                 MessageSendType.MESSAGE -> {
                     sendMessage(messageFormat[mapOf(
-                        "name" to source.name,
-                        "service" to source.service.name.toLowerCase().capitalize(),
-                        "message" to content
+                            "name" to source.name,
+                            "service" to source.service.name.toLowerCase().capitalize(),
+                            "message" to content
                     )]).queue()
                 }
                 else -> return
@@ -215,16 +217,43 @@ class DiscordService constructor(serverIP: String, invite: String, token: CharAr
 
 private class JDAListener(private val service: DiscordService, private val api: BroadChatAPI): ListenerAdapter() {
 
+    val mentionUserRegex = Pattern.compile("<@[0-9]{18}>|<@![0-9]{18}>")!!
+    val mentionRoleRegex = Pattern.compile("<@&[0-9]{18}>")!!
+    val mentionChannelRegex = Pattern.compile("<#[0-9]{18}>")!!
+
     override fun onMessageReceived(event: MessageReceivedEvent) {
+
         if (event.channel !is TextChannel) return
         if (event.author.isBot) return
-        val input = service.input[event.channel.id] ?: return
+        var input = service.input[event.channel.id] ?: return
+
+        if (input.isEmpty() && event.message.attachments.isNotEmpty()) {
+            input = event.message.attachments.joinToString(separator = ", ") {
+                if (it.isImage) "[image]" else "[file \"${it.fileName}\" ${it.size.toLong().bytes()}]"
+            }
+        }
+
+        fun matching(pattern: Pattern, func: (String) -> String) {
+            val matcher = pattern.matcher(input)
+            while (matcher.find()) {
+                val newStr = func(matcher.group())
+                input = "${input.substring(0, matcher.regionStart())}$newStr${input.substring(matcher.regionEnd(), input.length)}"
+            }
+        }
+
+        matching(mentionUserRegex) {
+            "${ChatColor.AQUA}@${event.guild.getMember(
+                    service.jda.getUserById(it.substring(Math.max(it.indexOf("@"), it.indexOf("!")), it.length - 1))).effectiveName}${ChatColor.RESET}"
+        }
+        matching(mentionRoleRegex) { "${ChatColor.GOLD}@${service.jda.getRoleById(it.substring(2, it.length - 1)).name}${ChatColor.RESET}" }
+        matching(mentionChannelRegex) { "${ChatColor.AQUA}@${service.jda.getTextChannelById(it.substring(2, it.length - 1)).name}${ChatColor.RESET}" }
+
         DiscordUserTarget(event.member, service).broadchat(event.message.rawContent, api, input)
     }
 
 }
 
-class DiscordUserTarget(val member: Member, discordService: DiscordService) : ExternalBroadChatSource(discordService) {
+class DiscordUserTarget(val member: Member, discordService: DiscordService): ExternalBroadChatSource(discordService) {
 
     override val color: Color
         get() = member.roles.first().color

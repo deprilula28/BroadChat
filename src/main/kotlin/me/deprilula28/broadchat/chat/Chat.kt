@@ -1,9 +1,9 @@
 package me.deprilula28.broadchat.chat
 
 import me.deprilula28.broadchat.api.BroadChatSource
+import me.deprilula28.broadchat.util.api
 import me.deprilula28.broadchat.util.ccDataFolder
 import me.deprilula28.broadchat.util.debug
-import me.deprilula28.broadchat.util.api
 import me.deprilula28.broadchat.util.gson
 import net.md_5.bungee.api.ChatColor
 import java.awt.Color

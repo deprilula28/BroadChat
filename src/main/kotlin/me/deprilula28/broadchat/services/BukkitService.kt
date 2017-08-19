@@ -33,17 +33,20 @@ class BukkitService(private val api: BroadChatAPI, plugin: Plugin):
 
     @EventHandler
     fun onPlayerChat(event: AsyncPlayerChatEvent) =
-        BukkitPlayerTarget(event.player, this).broadchat(event.message, api, event.player.world.name)
+            BukkitPlayerTarget(event.player, this).broadchat(event.message, api, event.player.world.name)
 
     override fun sendChatMessage(source: BroadChatSource, content: String, chat: Chat) =
-        warn("Chats shouldn't work on Spigot...")
+            warn("Chats shouldn't work on Spigot...")
 
     override fun sendMessage(source: BroadChatSource, content: String, messageChannel: String) {
 
+        var finalContent = content
+        if (finalContent.length > 100) finalContent = finalContent.substring(0 .. 100) + "..."
+        if (finalContent.isEmpty()) return
         val msg = api.settings["message-format-external"][mapOf(
                 "name" to source.name,
                 "service" to source.service.name.toLowerCase().capitalize(),
-                "message" to content
+                "message" to finalContent
         )]
         Bukkit.getOnlinePlayers().forEach {
             it.sendMessage(msg)
@@ -53,7 +56,7 @@ class BukkitService(private val api: BroadChatAPI, plugin: Plugin):
 
 }
 
-class BukkitPlayerTarget(val player: Player, bukkitService: BukkitService) : BroadChatSource(bukkitService) {
+class BukkitPlayerTarget(val player: Player, bukkitService: BukkitService): BroadChatSource(bukkitService) {
 
     override val name: String
         get() = player.name

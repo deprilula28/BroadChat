@@ -13,10 +13,10 @@ abstract class ExternalBroadChatService(name: String, id: String, hoverMessage: 
 abstract class BroadChatService(val id: String, val name: String, val hoverMessage: String, val specificHoverMessage: Function<BroadChatSource, Optional<String>>) {
     abstract fun sendMessage(source: BroadChatSource, content: String, messageChannel: String)
     abstract fun sendChatMessage(source: BroadChatSource, content: String, chat: Chat)
-    open fun disable() { }
+    open fun disable() {}
 }
 
-abstract class ExternalBroadChatSource(val extService: ExternalBroadChatService) : BroadChatSource(extService) {
+abstract class ExternalBroadChatSource(val extService: ExternalBroadChatService): BroadChatSource(extService) {
 
     fun url(target: BroadChatSource): Optional<String> = extService.specificClickURL.apply(target)
 

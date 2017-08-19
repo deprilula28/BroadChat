@@ -1,27 +1,34 @@
 package me.deprilula28.broadchat.chat
 
+import me.deprilula28.broadchat.api.CommandTree
 import net.md_5.bungee.api.connection.ProxiedPlayer
 
-interface ChatSubCommand {
+object ChatCommand: CommandTree.TypeCommand(arrayOf("chat", "broadchat")) {
 
-    val name: String
-    val description: String
-    val usage: String
-    val aliases: List<String>
+    override val name = "Chat"
+    override val description = "Manage chat"
+    override val usage = "/chat"
 
-    fun exec(player: ProxiedPlayer, args: Array<String>)
+    override fun handle(player: ProxiedPlayer, args: CommandTree.Arguments) {
+
+
+
+    }
 
 }
 
-class CreateSubCommand: ChatSubCommand {
+object CreateSubCommand: CommandTree.TypeCommand(arrayOf("create", "make", "new")) {
 
     override val name = "Create"
     override val description = "Create a player chat"
     override val usage = "/chat create <name> [password]"
-    override val aliases = listOf("create", "make", "new")
 
-    override fun exec(player: ProxiedPlayer, args: Array<String>) {
+    override fun handle(player: ProxiedPlayer, args: CommandTree.Arguments) {
 
+        val name = args()
+        val password = args(backup = "")
+
+        // TODO chat amount checks
 
 
     }

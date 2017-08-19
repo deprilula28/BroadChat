@@ -9,7 +9,6 @@ import me.deprilula28.broadchat.util.errorLog
 import me.deprilula28.broadchat.util.toAWT
 import me.deprilula28.broadchat.util.warn
 import net.md_5.bungee.api.ChatColor
-import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.event.ChatEvent
@@ -64,13 +63,17 @@ class BungeeService(private val api: BroadChatAPI, bungeeCordPlugin: Plugin):
 
     override fun sendMessage(source: BroadChatSource, content: String, messageChannel: String) {
 
+        var finalContent = content
+        if (finalContent.length > 100) finalContent = finalContent.substring(0 .. 100) + "..."
+        if (finalContent.isEmpty()) return
+
         debug("Sending message: $content to bungeecord")
         errorLog("Failed to handle message") {
             if (messageChannel == "*") {
                 val msg = api.settings["message-format-external"][mapOf(
                         "name" to source.name,
                         "service" to source.service.name.toLowerCase().capitalize(),
-                        "message" to content
+                        "message" to finalContent
                 )]
                 proxy.players.forEach {
                     it.sendMessage(TextComponent(msg))
@@ -79,7 +82,7 @@ class BungeeService(private val api: BroadChatAPI, bungeeCordPlugin: Plugin):
                 val msg = api.settings["message-format-external"][mapOf(
                         "name" to source.name,
                         "service" to source.service.name.toLowerCase().capitalize(),
-                        "message" to content
+                        "message" to finalContent
                 )]
                 proxy.servers[messageChannel]!!.players.forEach {
                     it.sendMessage(TextComponent(msg))
@@ -93,7 +96,7 @@ class BungeeService(private val api: BroadChatAPI, bungeeCordPlugin: Plugin):
 
 }
 
-class BungeePlayerTarget(val player: ProxiedPlayer, bungeeService: BungeeService) : BroadChatSource(bungeeService) {
+class BungeePlayerTarget(val player: ProxiedPlayer, bungeeService: BungeeService): BroadChatSource(bungeeService) {
 
     override val name: String
         get() = player.displayName

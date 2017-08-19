@@ -32,7 +32,6 @@ class BroadChatBungee: Plugin() {
     override fun onDisable() {
 
 
-
     }
 
 }

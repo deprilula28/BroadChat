@@ -23,4 +23,5 @@ private val colorMap = mapOf(
 object BungeeUtils {
     fun coloredBng(str: String): String = ChatColor.translateAlternateColorCodes('&', str)
 }
+
 fun ChatColor.toAWT(): AWTColor = colorMap[this]!!

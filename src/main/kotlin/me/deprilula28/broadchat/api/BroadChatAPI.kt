@@ -2,15 +2,16 @@ package me.deprilula28.broadchat.api
 
 import me.deprilula28.broadchat.chat.Chat
 import me.deprilula28.broadchat.util.info
+import java.util.*
 
 class BroadChatAPI {
 
     private val services = mutableListOf<BroadChatService>()
     val chats = mutableMapOf<String, Chat>()
+    val playerChats = mutableMapOf<UUID, List<Chat>>()
     lateinit var settings: me.deprilula28.broadchat.settings.SettingParser
 
     init {
-
     }
 
     internal fun sendMessage(chatSource: BroadChatSource, message: String, channel: String) {
