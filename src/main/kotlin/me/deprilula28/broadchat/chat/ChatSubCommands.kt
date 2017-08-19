@@ -11,7 +11,7 @@ object ChatCommand: CommandTree.TypeCommand(arrayOf("chat", "broadchat")) {
 
     override fun handle(player: ProxiedPlayer, args: CommandTree.Arguments) {
 
-
+        
 
     }
 

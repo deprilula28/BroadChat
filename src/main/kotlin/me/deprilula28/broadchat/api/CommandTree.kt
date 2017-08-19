@@ -54,7 +54,7 @@ class CommandTree(private val plugin: Plugin) {
         })
         func(cmd)
         cmd.registerHelp()
-        
+
     }
 
     abstract class TypeCommand(val aliases: Array<String>) {
