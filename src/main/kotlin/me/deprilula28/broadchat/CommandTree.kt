@@ -1,7 +1,6 @@
-package me.deprilula28.broadchat.api
+package me.deprilula28.broadchat
 
-import me.deprilula28.broadchat.chat.ChatCommand
-import me.deprilula28.broadchat.chat.CreateSubCommand
+import me.deprilula28.broadchat.chat.*
 import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.chat.TextComponent
@@ -18,6 +17,11 @@ class CommandTree(private val plugin: Plugin) {
         // Command Registering
         cmd(ChatCommand) {
             sub(CreateSubCommand)
+            sub(PermissionSubCommand) {
+                sub(PermissionsCreateRoleSubCommand)
+                sub(PermissionsEditRoleSubCommand)
+                sub(PermissionsEditPlayerRolesSubCommand)
+            }
         }
 
         // Help
@@ -35,7 +39,7 @@ class CommandTree(private val plugin: Plugin) {
         plugin.proxy.pluginManager.registerCommand(plugin, object: Command(cmd.name, "broadchat.${cmd.name}", *(cmd.aliases)) {
             override fun execute(sender: CommandSender, args: Array<out String>) {
                 if (sender !is ProxiedPlayer) {
-                    sender.sendMessage(TextComponent("Commands can only be executed"))
+                    sender.sendMessage(TextComponent("Commands can only be executed by players."))
                     return
                 }
 
@@ -63,7 +67,7 @@ class CommandTree(private val plugin: Plugin) {
         abstract val name: String
         abstract val description: String
         abstract val usage: String
-        private lateinit var help: String
+        lateinit var help: String
 
         abstract fun handle(player: ProxiedPlayer, args: Arguments)
 
@@ -105,6 +109,9 @@ class CommandTree(private val plugin: Plugin) {
 
     class Arguments(private val args: List<String>) {
         private var curIndex = 0
+
+        val vararg: List<String>
+            get() = if (curIndex >= args.size) throw ArgsException("Invalid arguments!") else args.subList(curIndex, args.size)
 
         operator fun invoke(numb: Int = curIndex, backup: String): String {
 

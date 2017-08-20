@@ -11,6 +11,7 @@ import java.io.File
 import java.util.logging.Logger
 
 class BroadChatBungee: Plugin() {
+    lateinit var commandTree: CommandTree
 
     override fun onEnable() {
 
@@ -24,7 +25,13 @@ class BroadChatBungee: Plugin() {
             config.writeText(javaClass.getResourceAsStream("/config.yml").readText())
         }
         api.settings = SettingParser(yaml.load(config.readText())!! as Map<String, Any>, api)
-        api.addService(BungeeService(api, this))
+        val service = BungeeService(api, this)
+        api.addService(service)
+        api.minecraftService = service
+        info("Registering commands...")
+        commandTree = CommandTree(this)
+
+
         info("Finished loading.")
 
     }

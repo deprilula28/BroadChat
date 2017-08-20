@@ -8,7 +8,8 @@ class BroadChatAPI {
 
     private val services = mutableListOf<BroadChatService>()
     val chats = mutableMapOf<String, Chat>()
-    val playerChats = mutableMapOf<UUID, List<Chat>>()
+    val playerChats = mutableMapOf<UUID, MutableList<Chat>>()
+    lateinit var minecraftService: BroadChatService
     lateinit var settings: me.deprilula28.broadchat.settings.SettingParser
 
     init {

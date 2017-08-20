@@ -1,11 +1,11 @@
 # Message format from external sources such as Discord.
 message-format-external: "&r<&5[_%SERVICE%_] &r_%NAME%_&r> _%MESSAGE%_"
 
-# Maximum amount of chats a single player (Without permission "BroadChat.Chat.NoCreatedCap") can create. Use -1 for infinite.
+# Maximum amount of chats a single player (Without permission "broadchat.chat.bypassCreatedCap") can create. Use -1 for infinite.
 chat-count-cap: 5
 
-# Maximum amount of chats a single player (Without permission "BroadChat.Chat.NoJoinedCap") can be a part of. Use -1 for infinite.
-chat-joined_cap: -1
+# Maximum amount of chats a single player (Without permission "broadchat.chat.bypassJoinedCap") can be a part of. Use -1 for infinite.
+chat-joined-cap: -1
 
 # Message format for a chat channel.
 message-format-chat: "_%CHAT_COLOR%_[_%CHAT_NAME%_] &r<_%NAME%_> _%MESSAGE%_"

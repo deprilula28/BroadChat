@@ -19,7 +19,7 @@ import java.awt.Color
 import java.util.*
 import java.util.function.Function
 
-class BungeeService(private val api: BroadChatAPI, bungeeCordPlugin: Plugin):
+class BungeeService(private val api: BroadChatAPI, val bungeeCordPlugin: Plugin):
         BroadChatService(
                 name = "Minecraft",
                 id = "bungee",

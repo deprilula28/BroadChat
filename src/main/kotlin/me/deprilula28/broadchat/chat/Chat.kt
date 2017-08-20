@@ -6,14 +6,15 @@ import me.deprilula28.broadchat.util.ccDataFolder
 import me.deprilula28.broadchat.util.debug
 import me.deprilula28.broadchat.util.gson
 import net.md_5.bungee.api.ChatColor
-import java.awt.Color
 import java.io.File
+import java.util.*
 
 class PlayerChat(val creator: BroadChatSource,
                  members: MutableList<BroadChatSource>,
                  permissions: MutableMap<BroadChatSource, ChatPermissionGroup>,
                  id: String,
                  name: String = "",
+                 password: String = "",
                  color: ChatColor):
         Chat(members, permissions, id, name, color)
 
@@ -22,6 +23,8 @@ open class Chat(val members: MutableList<BroadChatSource>,
                 val id: String,
                 private var innerName: String,
                 private var innerColor: ChatColor) {
+
+    val groups = mutableMapOf<String, ChatPermissionGroup>()
 
     val name: String
         get() = innerName
@@ -45,7 +48,7 @@ open class Chat(val members: MutableList<BroadChatSource>,
 
 }
 
-data class ChatPermissionGroup(val name: String, val perms: List<Permission>, val color: Color, val tag: String)
+data class ChatPermissionGroup(val name: String, val perms: MutableList<Permission>, var color: ChatColor, var tag: Optional<String>)
 enum class Permission(val permName: String, val descripton: String) {
 
     SPEAK("speak", "Allows you to talk"),

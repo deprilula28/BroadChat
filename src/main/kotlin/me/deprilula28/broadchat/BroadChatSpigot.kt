@@ -26,7 +26,9 @@ class BroadChatSpigot: CoPlugin() {
             config.writeText(javaClass.getResourceAsStream("/config.yml").readText())
         }
         api.settings = SettingParser(yaml.load(config.readText())!! as Map<String, Any>, api)
-        api.addService(BukkitService(api, this))
+        val service = BukkitService(api, this)
+        api.addService(service)
+        api.minecraftService = service
         info("Finished loading.")
 
     }
