@@ -4,6 +4,6 @@ deploy:
   provider: releases
   api_key:
     secure: Sm6vwNkZepN/pvvxNgqJzDBhJkwQXqfTQdEGGgvxbve6EpeZsFEpRsj9VLdQagO8NAqP7BWokhomQuVv7XzAuX2LIZQYoepTx7C9UQx8AnpO6+urDkDrbKVYChJG+jfug5+dDCKNLzJ0vmc8lEAolU+1xLQpgcINA0LEaW6TLnQIzOTUuRwDSAS4jeR81u+tpBIyKqA1M22jJwEekv7jmDO51PQnMf63bdOIxXWTE/MP2pUCyC9uFqmkvD/tTzW9K35E7pvwvyE/MP4S/7z+UynrIXAwlXWo3IHN93TBBzRKSvFrNLYzty7EcHtVvCej8BmWU5DTYI7TWBVUwnS04iBg8n0MSp91xFx1lfIZW6OFhEMzg5Aou6Gd3TXIW+o4/Z28Y3j5AMavb7F0DklDy1MFgY6Gyjg1+CAzIWUj7WA5JlSLmJoB2VUtfUGEEoCtkwymDzICxVpXSW1WmuRUxuO5MvOeMZeHY/OZH5ZxxhNsF7o+AyOXhi/TYq38QaIPQPvugbTm02BB5vHLystS+BkKFj+oY6tt4Oq+nnFy9IOrTc4Kmux1pPBsjBUzwRD4/4sJ5hQnTjx6CT1lgEVffzR6Kv2Sju3CKVnbKz+rObwwfPDGWrLPJPq9J1isU45/JXjOLBLB+2UK4AlPYyWhYf6jBS2Ah4jzZddBrV/iMzA=
-  file: BroadChat-0.1.0.jar
+  file: BroadChat-0.1.1.jar
   on:
     repo: deprilula28/BroadChat
