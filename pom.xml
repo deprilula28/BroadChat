@@ -45,14 +45,6 @@
             <version>6.0</version>
         </dependency>
 
-        <!-- Coalesce Core -->
-        <dependency>
-            <groupId>com.coalesce</groupId>
-            <artifactId>core</artifactId>
-            <version>1.0</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- BungeeCord -->
         <dependency>
             <groupId>net.md-5</groupId>
