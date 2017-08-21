@@ -6,12 +6,13 @@
 
     <groupId>me.deprilula28</groupId>
     <artifactId>BroadChat</artifactId>
-    <version>1.0</version>
+    <version>${broadchat-version}</version>
     <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <broadchat-version>0.1.1</broadchat-version>
     </properties>
 
     <repositories>
@@ -138,7 +139,7 @@
             <resource>
                 <targetPath>.</targetPath>
                 <directory>src/main/resources</directory>
-                <filtering>false</filtering>
+                <filtering>true</filtering>
                 <includes>
                     <include>*</include>
                 </includes>
